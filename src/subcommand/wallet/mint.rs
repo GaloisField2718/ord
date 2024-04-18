@@ -1,5 +1,6 @@
-use super::*;
+use bitcoin::{OutPoint, ScriptBuf, Transaction, TxIn, TxOut};
 use bitcoin::consensus::serialize;
+use super::*;
 
 #[derive(Debug, Parser)]
 pub(crate) struct Mint {
@@ -73,18 +74,31 @@ impl Mint {
       "runestone greater than maximum OP_RETURN size: {} > 82",
       script_pubkey.len()
     );
+    
+           let mut inputs = Vec::new();
+
+        if let Some(utxo) = self.utxo {
+            // Parse the utxo string into txid and vout
+            let (txid, vout) = parse_utxo(&utxo)?;
+
+            // Construct a TxIn using the parsed txid and vout
+            let txin = TxIn {
+                previous_output: OutPoint {
+                    txid: bitcoin::Txid::from_str(&txid)?,
+                    vout,
+                },
+                script_sig: ScriptBuf::default(), // or Script::new() if you prefer
+                sequence: bitcoin::Sequence(0xFFFFFFFF), // Wrap the integer value with bitcoin::Sequence
+                witness: Witness::default(), // Create an empty Witness
+            };
+
+            inputs.push(txin);
+        } 
 
     let unfunded_transaction = Transaction {
       version: 2,
       lock_time: LockTime::ZERO,
-      input: Vec::new(),
-          /*TxIn {*/
-			/*previous_output: OutPoint::from_str(utxo).unwrap(),*/
-			/*script_sig: Script::new(),*/
-			/*sequence: fdffffff,*/
-			/*witness: vec![],*/
-		/*}*/
-      /*], */     
+      input: inputs,
       output: vec![
         TxOut {
           script_pubkey,
@@ -129,4 +143,16 @@ impl Mint {
       mint: "You have the bytecode on top of it ^^",
     })))
   }
+}
+
+// Function to parse utxo string into txid and vout
+fn parse_utxo(utxo: &str) -> Result<(String, u32), anyhow::Error> {
+    let parts: Vec<&str> = utxo.split(':').collect();
+    if parts.len() != 2 {
+        bail!("Invalid UTXO format. Expected format: txid:vout");
+    }
+
+    let txid = parts[0].to_string();
+    let vout = parts[1].parse()?;
+    Ok((txid, vout))
 }
