@@ -20,10 +20,10 @@ pub(crate) struct Mint {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Output<'a> {
+pub struct Output{
   pub rune: SpacedRune,
   pub pile: Pile,
-  pub mint: &'a str,
+  pub mint: Txid,
 }
 
 impl Mint {
@@ -88,7 +88,7 @@ impl Mint {
                     vout,
                 },
                 script_sig: ScriptBuf::default(), // or Script::new() if you prefer
-                sequence: bitcoin::Sequence(0xFFFFFFFF), // Wrap the integer value with bitcoin::Sequence
+                sequence: bitcoin::Sequence::ENABLE_RBF_NO_LOCKTIME, // Wrap the integer value with bitcoin::Sequence
                 witness: Witness::default(), // Create an empty Witness
             };
 
@@ -131,7 +131,7 @@ impl Mint {
 
     // Encode the bytes as a hexadecimal string
     println!("Signed Transaction: {}", hex::encode(&signed_transaction_bytes));    
-    //let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
+    let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
 
     Ok(Some(Box::new(Output {
       rune: self.rune,
@@ -140,7 +140,7 @@ impl Mint {
         divisibility: rune_entry.divisibility,
         symbol: rune_entry.symbol,
       },
-      mint: "You have the bytecode on top of it ^^",
+      mint: transaction,
     })))
   }
 }
