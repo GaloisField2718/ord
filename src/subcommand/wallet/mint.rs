@@ -1,4 +1,5 @@
 use super::*;
+use bitcoin::consensus::serialize;
 
 #[derive(Debug, Parser)]
 pub(crate) struct Mint {
@@ -6,6 +7,8 @@ pub(crate) struct Mint {
   fee_rate: FeeRate,
   #[clap(long, help = "Mint <RUNE>. May contain `.` or `•`as spacers.")]
   rune: SpacedRune,
+  #[clap(long, help = "Add <UTXO> (TxID:vout) to choose specific utxo.")]
+  utxo: Option<String>,
   #[clap(
     long,
     help = "Include <AMOUNT> postage with mint output. [default: 10000sat]"
@@ -16,10 +19,10 @@ pub(crate) struct Mint {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Output {
+pub struct Output<'a> {
   pub rune: SpacedRune,
   pub pile: Pile,
-  pub mint: Txid,
+  pub mint: &'a str,
 }
 
 impl Mint {
@@ -75,6 +78,13 @@ impl Mint {
       version: 2,
       lock_time: LockTime::ZERO,
       input: Vec::new(),
+          /*TxIn {*/
+			/*previous_output: OutPoint::from_str(utxo).unwrap(),*/
+			/*script_sig: Script::new(),*/
+			/*sequence: fdffffff,*/
+			/*witness: vec![],*/
+		/*}*/
+      /*], */     
       output: vec![
         TxOut {
           script_pubkey,
@@ -102,8 +112,12 @@ impl Mint {
       Runestone::decipher(&signed_transaction),
       Some(Artifact::Runestone(runestone)),
     );
+    // Convert the transaction to bytes
+    let signed_transaction_bytes = serialize(&signed_transaction);
 
-    let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
+    // Encode the bytes as a hexadecimal string
+    println!("Signed Transaction: {}", hex::encode(&signed_transaction_bytes));    
+    //let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
 
     Ok(Some(Box::new(Output {
       rune: self.rune,
@@ -112,7 +126,7 @@ impl Mint {
         divisibility: rune_entry.divisibility,
         symbol: rune_entry.symbol,
       },
-      mint: transaction,
+      mint: "You have the bytecode on top of it ^^",
     })))
   }
 }
