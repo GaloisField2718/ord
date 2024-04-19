@@ -5,18 +5,18 @@ use super::*;
 #[derive(Debug, Parser)]
 pub(crate) struct Mint {
   #[clap(long, help = "Use <FEE_RATE> sats/vbyte for mint transaction.")]
-  fee_rate: FeeRate,
+  pub fee_rate: FeeRate,
   #[clap(long, help = "Mint <RUNE>. May contain `.` or `•`as spacers.")]
-  rune: SpacedRune,
+  pub rune: SpacedRune,
   #[clap(long, help = "Add <UTXO> (TxID:vout) to choose specific utxo.")]
-  utxo: Option<String>,
+  pub utxo: Option<String>,
   #[clap(
     long,
     help = "Include <AMOUNT> postage with mint output. [default: 10000sat]"
   )]
-  postage: Option<Amount>,
+  pub postage: Option<Amount>,
   #[clap(long, help = "Send minted runes to <DESTINATION>.")]
-  destination: Option<Address<NetworkUnchecked>>,
+  pub destination: Option<Address<NetworkUnchecked>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -24,6 +24,7 @@ pub struct Output{
   pub rune: SpacedRune,
   pub pile: Pile,
   pub mint: Txid,
+  pub rawtx: String,
 }
 
 impl Mint {
@@ -128,10 +129,14 @@ impl Mint {
     );
     // Convert the transaction to bytes
     let signed_transaction_bytes = serialize(&signed_transaction);
-
+    
+    let rawtx = hex::encode(&signed_transaction_bytes);
+    let txid = signed_transaction.txid();
+    
     // Encode the bytes as a hexadecimal string
-    println!("Signed Transaction: {}", hex::encode(&signed_transaction_bytes));    
-    let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
+    //println!("Signed Transaction: {}", hex::encode(&signed_transaction_bytes));    
+    //let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
+    //println!("Transaction ID {}", signed_transaction.txid());
 
     Ok(Some(Box::new(Output {
       rune: self.rune,
@@ -140,9 +145,11 @@ impl Mint {
         divisibility: rune_entry.divisibility,
         symbol: rune_entry.symbol,
       },
-      mint: transaction,
+      mint: txid,
+      rawtx: rawtx,
     })))
   }
+
 }
 
 // Function to parse utxo string into txid and vout

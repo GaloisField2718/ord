@@ -14,6 +14,7 @@ pub mod inscribe;
 pub mod inscriptions;
 mod label;
 pub mod mint;
+pub mod mints;
 pub mod outputs;
 pub mod receive;
 pub mod restore;
@@ -59,6 +60,8 @@ pub(crate) enum Subcommand {
   Label,
   #[command(about = "Mint a rune")]
   Mint(mint::Mint),
+  #[command(about = "Mint multiple times from a choosen utxo")]
+  Mints(mints::Mints),
   #[command(about = "List all unspent outputs in wallet")]
   Outputs,
   #[command(about = "Generate receive address")]
@@ -92,7 +95,7 @@ impl WalletCommand {
         .as_ref()
         .map(Url::as_str)
         .or(settings.server_url())
-        .unwrap_or("http://127.0.0.1:80")
+        .unwrap_or("http://127.0.0.1:8081")
         .parse::<Url>()
         .context("invalid server URL")?,
     )?;
@@ -107,6 +110,7 @@ impl WalletCommand {
       Subcommand::Inscriptions => inscriptions::run(wallet),
       Subcommand::Label => label::run(wallet),
       Subcommand::Mint(mint) => mint.run(wallet),
+      Subcommand::Mints(mints) => mints.run(wallet),
       Subcommand::Outputs => outputs::run(wallet),
       Subcommand::Receive(receive) => receive.run(wallet),
       Subcommand::Resume => resume::run(wallet),
