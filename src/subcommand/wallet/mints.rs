@@ -1,7 +1,6 @@
 //use bitcoin::{OutPoint, ScriptBuf, Transaction, TxIn, TxOut};
 //use bitcoin::consensus::serialize;
 use super::*;
-
 use crate::subcommand::wallet::mint::Mint;
 
 #[derive(Debug, Parser)]
@@ -60,7 +59,8 @@ impl Mints {
 
     // Call the run function on the Mint object
     let output = mint.run(wallet)?;
-	
+    println!("{}", output.ok());
+
     // Return the result or handle it further
     //Ok(())
 
@@ -72,13 +72,13 @@ impl Mints {
 }
 
 // Function to parse utxo string into txid and vout
-fn parse_utxo(utxo: &str) -> Result<(String, u32), anyhow::Error> {
-    let parts: Vec<&str> = utxo.split(':').collect();
-    if parts.len() != 2 {
-        bail!("Invalid UTXO format. Expected format: txid:vout");
-    }
+/*fn parse_utxo(utxo: &str) -> Result<(String, u32), anyhow::Error> {*/
+    /*let parts: Vec<&str> = utxo.split(':').collect();*/
+    /*if parts.len() != 2 {*/
+        /*bail!("Invalid UTXO format. Expected format: txid:vout");*/
+    /*}*/
 
-    let txid = parts[0].to_string();
-    let vout = parts[1].parse()?;
-    Ok((txid, vout))
-}
+    /*let txid = parts[0].to_string();*/
+    /*let vout = parts[1].parse()?;*/
+    /*Ok((txid, vout))*/
+/*}*/
