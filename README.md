@@ -1,6 +1,22 @@
 `ord`
 =====
 
+This is a fork of `ord` cli. 
+
+With this fork you have one flag more to mint runes: `--utxo`.
+You can use to target a specific utxo to mint AND you can use to accelerate a stuck minting tx. 
+
+Details are [in this thread](https://x.com/Blockcryptology/status/1780784604783300685).
+
+🧙🪄🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🧙🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
+
+
+MAGIC•INTERNET•MONEY
+
+
+Official `ord README.md`
+====
+
 `ord` is an index, block explorer, and command-line wallet. It is experimental
 software with no warranty. See [LICENSE](LICENSE) for more details.
 
