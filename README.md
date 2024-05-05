@@ -1,7 +1,7 @@
-`ord`
+`cord`
 =====
 
-This is a fork of `ord` cli. 
+This is a fork of `ord` cli. I named it `cord` for *custom* ord.
 
 With this fork you have one flag more to mint runes: `--utxo`.
 You can use to target a specific utxo to mint AND you can use to accelerate a stuck minting tx. 
