@@ -58,8 +58,8 @@ impl Mints {
     };
 
     // Call the run function on the Mint object
-    let output = mint.run(wallet)?;
-    println!("{}", output.ok());
+    let _output = mint.run(wallet)?;
+//    println!("{}", output.ok());
 
     // Return the result or handle it further
     //Ok(())

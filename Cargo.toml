@@ -81,7 +81,7 @@ mockcore = { path = "crates/mockcore" }
 unindent = "0.2.1"
 
 [[bin]]
-name = "ord"
+name = "cord"
 path = "src/bin/main.rs"
 
 [lib]
