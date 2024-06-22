@@ -1,18 +1,19 @@
 [package]
-name = "ord"
-description = "◉ Ordinal wallet and block explorer"
-version = "0.18.4"
+name = "cord"
+description = "◉ Ordinal wallet and block explorer, customized by galois"
+version = "0.18.4-gf"
 license = "CC0-1.0"
 edition = "2021"
 autotests = false
 homepage = "https://github.com/ordinals/ord"
-repository = "https://github.com/ordinals/ord"
+repository = "https://github.com/GaloisField2718/ord"
 autobins = false
 rust-version = "1.76.0"
 
 [package.metadata.deb]
 copyright = "The Ord Maintainers"
 maintainer = "The Ord Maintainers"
+contributor = "Galois Field"
 
 [workspace]
 members = [".", "crates/*"]
